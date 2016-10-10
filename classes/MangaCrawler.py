@@ -17,11 +17,10 @@ except ImportError:
 class MangaCrawler:
     mangas = []
     supportedSites = ["mangafox"]
-    def __init__(self):
-        test = "test"
+    def __init__(self, verbose):
+        self.verbose = verbose
         conf = Conf()
         self.config = conf.config
-        print(self.config)
 
     def getManga(self):
         self.mal = MAL()
@@ -46,7 +45,8 @@ class MangaCrawler:
                     return 0
                 if row:
                     rows.append(row)
-                    print(row)
+                    if self.verbose:
+                        print(row)
         return self.writeCSV(rows)
 
     def writeCSV(self, rows):
@@ -65,7 +65,8 @@ class MangaCrawler:
     def getMangaSiteAddress(self, site, urlPart, manga):
         name = manga.name
         search_term = "%s %s %s %s" % (site, name, urlPart, "-forum")
-        print(search_term)
+        if self.verbose:
+            print(search_term)
         api_key = self.config["DEFAULT"]["azure_account_key"];
         bing_web = PyBingWebSearch(api_key, search_term, web_only=False) # web_only is optional, but should be true to use your web only quota instead of your all purpose quota
         results = bing_web.search(limit=1, format='json')
@@ -86,7 +87,8 @@ class MangaCrawler:
             return 0
 
     def parseMangaFox(self, manga, url):
-        print(url)
+        if self.verbose:
+            print(url)
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
         try:
             with urllib.request.urlopen(req) as htmlfile:

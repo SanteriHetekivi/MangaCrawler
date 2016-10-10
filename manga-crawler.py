@@ -1,6 +1,8 @@
 from classes.MangaCrawler import MangaCrawler
+import sys
 
-crawler = MangaCrawler()
+verbose = "-v" in sys.argv
+crawler = MangaCrawler(verbose)
 if crawler.run("mangafox"):
     print("DONE")
 else:

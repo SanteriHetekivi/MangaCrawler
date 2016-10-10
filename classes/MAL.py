@@ -6,7 +6,7 @@ class MAL:
 
     mangas = []
     def __init__(self):
-        print(self.parse())
+        self.parse()
 
     def printNames(self):
         self.printNames(self.mangas)
