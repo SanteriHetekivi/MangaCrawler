@@ -1,6 +1,8 @@
 from .MAL import MAL
+from .Conf import Conf
 from contextlib import closing
 import urllib
+from py_bing_search import PyBingWebSearch
 import re
 from urllib.parse import quote
 import urllib.request
@@ -13,22 +15,41 @@ except ImportError:
     from BeautifulSoup import BeautifulSoup
 
 class MangaCrawler:
-
+    mangas = []
+    supportedSites = ["mangafox"]
     def __init__(self):
+        test = "test"
+        conf = Conf()
+        self.config = conf.config
+        print(self.config)
+
+    def getManga(self):
         self.mal = MAL()
         on_hold = self.mal.getMangasByStatus("On-Hold")
         plan_to_read = self.mal.getMangasByStatus("Plan to Read")
-        mangas = on_hold + plan_to_read
-        mangas.sort(key=lambda x: x.chapters)
+        self.mangas = on_hold + plan_to_read
+        self.mangas.sort(key=lambda x: x.chapters)
+
+    def run(self, mangasite):
+        mangasite = mangasite.lower()
+        if mangasite not in self.supportedSites:
+            return 0
+        self.getManga()
         rows = []
         rows.append(["Name","Read Chapters","New Chapters","MangaFox", "MAL"])
-        for manga in mangas:
-            mangafox_url = self.getMangaFoxAddress(manga)
-            if mangafox_url:
-                row = self.parseMangaFox(manga, mangafox_url)
+        for manga in self.mangas:
+            mangaSiteUrl = self.getMangaSiteAddress(mangasite, "manga", manga)
+            if mangaSiteUrl:
+                if mangasite == "mangafox":
+                    row = self.parseMangaFox(manga, mangaSiteUrl)
+                else:
+                    return 0
                 if row:
                     rows.append(row)
                     print(row)
+        return self.writeCSV(rows)
+
+    def writeCSV(self, rows):
         directory  = os.path.dirname(os.path.abspath(__file__))
         filename = "new_chapters_%s.csv" % (int(time.time()))
         path = directory+'/../data/'+filename
@@ -38,27 +59,30 @@ class MangaCrawler:
             for row in rows:
                 csvwriter.writerow(row)
             csvfile.close()
-    def getMangaFoxAddress(self, manga):
+            return 1
+        return 0
+
+    def getMangaSiteAddress(self, site, urlPart, manga):
         name = manga.name
-        name = quote(name)
-        url = 'https://www.google.fi/search?sclient=psy-ab&client=ubuntu&hs=k5b&channel=fs&biw=1366&bih=648&noj=1&q=mangafox+'+name
-        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        print(url)
-        try:
-            with urllib.request.urlopen(req) as htmlfile:
-                soup = BeautifulSoup(htmlfile.read(), "lxml")
-                mangafox_url = soup.h3.a["href"].replace("/url?q=", "")
-                parts = mangafox_url.split("/")
-                mangafox_url = "";
-                stop_next = 0
-                for part in parts:
-                    mangafox_url += part+"/"
-                    if part=="manga":
-                        stop_next = 1
-                    elif stop_next:
-                        break
-                return mangafox_url
-        except urllib.error.HTTPError as err:
+        search_term = "%s %s %s %s" % (site, name, urlPart, "-forum")
+        print(search_term)
+        api_key = self.config["DEFAULT"]["azure_account_key"];
+        bing_web = PyBingWebSearch(api_key, search_term, web_only=False) # web_only is optional, but should be true to use your web only quota instead of your all purpose quota
+        results = bing_web.search(limit=1, format='json')
+        length = len(results)
+        if length > 0 and site in results[0].url and urlPart in results[0].url:
+            mangaSiteUrl = results[0].url
+            parts = mangaSiteUrl.split("/")
+            mangaSiteUrl = "";
+            stop_next = 0
+            for part in parts:
+                mangaSiteUrl += part+"/"
+                if part==urlPart:
+                    stop_next = 1
+                elif stop_next:
+                    break
+            return mangaSiteUrl
+        else:
             return 0
 
     def parseMangaFox(self, manga, url):
