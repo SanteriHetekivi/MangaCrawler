@@ -1,4 +1,3 @@
-import scrapy
 from .MAL import MAL
 from contextlib import closing
 import urllib
