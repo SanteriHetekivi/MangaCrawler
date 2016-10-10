@@ -1,3 +1,8 @@
+'''
+  Made by Santeri Hetekivi.
+  Licensed under Apache License 2.0.
+  10/2016
+'''
 import os
 import glob
 import xml.etree.ElementTree as ET

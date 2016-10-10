@@ -1,3 +1,8 @@
+'''
+  Made by Santeri Hetekivi.
+  Licensed under Apache License 2.0.
+  10/2016
+'''
 class Manga:
     malUrlStart = "https://myanimelist.net/manga/"
     def __init__(self, _id, _name, my_status, _my_read_chapters):

@@ -1,3 +1,8 @@
+'''
+  Made by Santeri Hetekivi.
+  Licensed under Apache License 2.0.
+  10/2016
+'''
 from .MAL import MAL
 from .Conf import Conf
 from contextlib import closing
