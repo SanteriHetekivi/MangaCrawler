@@ -29,6 +29,15 @@
 | ----------------- | ------------- |
 | azure_account_key | Account key for azure that has [Bing Search API](https://datamarket.azure.com/dataset/5BA839F1-12CE-4CCE-BF57-A49D98D29A44) access. |
 
+### Start parameters  
+| Short | Long   | Description |
+| ----- | ------ |  ---------- |
+| -v    |        |  Print verbose status messages. |
+| -h    | --help |  Print Help message. |
+| -f    | --find |  Manga find mode to use (new or updated (-f updated)). |
+| -s    | --site |  Manga site to use (-s mangafox). |
+| -c    | --min_chapters |  Minimum amount of new chapters that manga has to have before it gets to output csv. (-c 5) |
+
 ## Support and licenses
 
 ### Supported List Sites  

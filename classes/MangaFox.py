@@ -7,6 +7,7 @@ from .MangaSite import MangaSite
 import urllib
 import re
 import urllib.request
+import urllib.parse
 try:
     from bs4 import BeautifulSoup
 except ImportError:
@@ -40,23 +41,23 @@ class MangaFox(MangaSite):
                 numbers = re.findall('\d+\.\d+|\d+', chaptername)
                 length = len(numbers)
                 if length <= 0:
-                    return 0
+                    return False
                 chapters = numbers[length-1]
                 numbers = re.findall('\d+', chapters)
                 length = len(numbers)
                 if length <= 0:
-                    return 0
+                    return False
                 try:
                     chapters = int(numbers[0])
                 except ValueError:
-                    return 0
+                    return False
                 new_chapers = chapters-manga.chapters
-                if new_chapers < 5:
-                    return 0
+                if new_chapers <= self.settings.min_chapters:
+                    return False
                 row = [manga.name.replace(",", " "), manga.chapters, new_chapers, url, manga.url]
                 return row
         except urllib.error.HTTPError as err:
-            return 0
+            return False
 
     def get_new_mangas(self, mangas):
         page = 1
@@ -119,12 +120,14 @@ class MangaFox(MangaSite):
                                 manga_name = link.text
                                 if not self.in_names(manga_name):
                                     chapters = int(cells[3].text)
-                                    if chapters >= 5:
+                                    manga_name = manga_name.replace(",", " ")
+                                    if chapters >= self.settings.min_chapters:
                                         if link.has_attr('href'):
                                             manga_url = link["href"]
                                         else:
                                             manga_url = ""
-                                        row = [manga_name.replace(",", " "), chapters, manga_url]
+                                        google_url='https://www.google.fi/search?q=myanimelist.net'+urllib.parse.quote_plus(manga_name)+'+manga'
+                                        row = [manga_name, chapters, manga_url, google_url]
                                         rows.append(row)
                                         if self.settings.verbose:
                                             print(row)

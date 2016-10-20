@@ -47,9 +47,8 @@ class MangaCrawler:
 
     def find_new(self):
         self.getManga(["Completed", "Reading", "Dropped", "On-Hold"])
-        rows = [["Name", "Chapters", "MangaFox"]]
+        rows = [["Name", "Chapters", "MangaFox", "Google"]]
         new_mangas = self.mangaSite.get_new_mangas(self.mangas)
-        print(new_mangas)
         if new_mangas:
             rows += new_mangas
             return self.write_csv(rows)

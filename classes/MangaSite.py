@@ -86,10 +86,10 @@ class MangaSite:
 
     def in_names(self, name):
         name = self.trim(name)
-        for manga_name in self.manga_names:
-            if manga_name in name or name in manga_name:
-                return True
-        return False
+        #for manga_name in self.manga_names:
+            #if manga_name in name or name in manga_name:
+                #return True
+        return name in self.manga_names
 
 
 
