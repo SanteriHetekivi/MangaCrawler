@@ -20,9 +20,9 @@
     * Copy/Move mangalist.xml file to projects data directory.
 4. Run the program  
     * With output  
-    ```python manga-crawler.py -v```
+    ```python manga-crawler.py -f updated -s mangafox -v```
     * Without output  
-    ```python manga-crawler.py```
+    ```python manga-crawler.py -f updated -s mangafox```
 
 ### Keys from config.ini descriptions
 | Name              | Description   |

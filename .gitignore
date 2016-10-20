@@ -93,3 +93,5 @@ data/*
 !data/.keep
 
 *.ini
+
+.idea

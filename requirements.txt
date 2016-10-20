@@ -1,2 +1,3 @@
 beautifulsoup4==4.4.0
 py-bing-search==0.2.6
+lxml==3.6.4
