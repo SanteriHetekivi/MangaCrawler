@@ -7,6 +7,7 @@ from py_bing_search import PyBingWebSearch
 from .Conf import Conf
 from .Settings import Settings
 import re
+from unidecode import unidecode
 
 class MangaSite:
     genres = []
@@ -79,10 +80,12 @@ class MangaSite:
         names = []
         for manga in mangas:
             names.append(self.trim(manga.name))
+            for synonym in manga.synonyms:
+                names.append(self.trim(synonym))
         self.manga_names = names
 
     def trim(self, str):
-        return re.sub(r'\W+', '', str.lower().strip())
+        return unidecode(re.sub(r'\W+', '', re.sub(r'\([^)]*\)', '', str.lower()).strip()))
 
     def in_names(self, name):
         name = self.trim(name)
@@ -90,6 +93,3 @@ class MangaSite:
             #if manga_name in name or name in manga_name:
                 #return True
         return name in self.manga_names
-
-
-

@@ -79,7 +79,8 @@ class MangaFox(MangaSite):
             page += 1
             end = int(round(time.time()))
             diff_time = end - start
-            time.sleep(6-diff_time)
+            sleep_time = (6-diff_time) if (6-diff_time) > 0 else 0
+            time.sleep(sleep_time)
         return mangas
 
     def make_genres_to_url(self):
@@ -126,7 +127,7 @@ class MangaFox(MangaSite):
                                             manga_url = link["href"]
                                         else:
                                             manga_url = ""
-                                        google_url='https://www.google.fi/search?q=myanimelist.net'+urllib.parse.quote_plus(manga_name)+'+manga'
+                                        google_url='https://www.google.fi/search?q=myanimelist.net+'+urllib.parse.quote_plus(manga_name)+'+manga'
                                         row = [manga_name, chapters, manga_url, google_url]
                                         rows.append(row)
                                         if self.settings.verbose:
