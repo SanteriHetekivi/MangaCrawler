@@ -47,14 +47,20 @@ class MangaCrawler:
 
     def find_new(self):
         self.getManga(["Completed", "Reading", "Dropped", "On-Hold"])
-        print(len(self.mangas))
+        rows = [["Name", "Chapters", "MangaFox"]]
+        new_mangas = self.mangaSite.get_new_mangas(self.mangas)
+        print(new_mangas)
+        if new_mangas:
+            rows += new_mangas
+            return self.write_csv(rows)
+        return False
 
     def find_updated(self):
         self.getManga(["On-Hold", "Plan to Read"])
         print(len(self.mangas))
         rows = [["Name", "Read Chapters", "New Chapters", "MangaFox", "MAL"]]
         for manga in self.mangas:
-            row = self.mangaSite.getUpdatedManga(manga)
+            row = self.mangaSite.get_updated_manga(manga)
             if row:
                 rows.append(row)
                 if self.settings.verbose:
