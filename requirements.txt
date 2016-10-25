@@ -1,4 +1,6 @@
-beautifulsoup4==4.4.0
-py-bing-search==0.2.6
-lxml==3.6.4
-unidecode==0.04.19
+bs4
+beautifulsoup4
+py-bing-search
+lxml
+unidecode
+Jinja2

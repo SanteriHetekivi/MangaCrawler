@@ -1,9 +1,8 @@
-'''
+"""
   Made by Santeri Hetekivi.
   Licensed under Apache License 2.0.
   10/2016
-'''
-import xml.etree.ElementTree as ET
+"""
 from .XML import XML
 from .Manga import Manga
 
@@ -14,47 +13,46 @@ class MAL:
     statuses = {"Reading": 1, "Completed": 2, "On-Hold": 3, "Dropped": 4, "Plan to Read": 6}
 
     def __init__(self):
-        self.parse()
+        self.XML = XML()
 
-    def printNames(self):
-        self.printNames(self.mangas)
-
-    def printNames(self, _mangas):
-        for manga in _mangas:
+    def print_names(self, mangas=None):
+        if not mangas:
+            mangas = self.mangas
+        for manga in mangas:
             print("%s %s %s" % (manga.name, manga.status, manga.chapters))
 
-    def parse(self):
-        self.XML = XML()
-        root = self.XML.getXMLRoot()
+    def parse(self, file_path=None):
+        root = self.XML.get_xml_root(file_path)
         if root:
             for manga in root.iter('manga'):
                 self.mangas.append(
                     Manga(
-                        self.getInfos(manga, ["manga_mangadb_id", "series_animedb_id"]),
-                        self.getInfos(manga, ["manga_title", "series_title"]),
-                        self.getInfo(manga, "my_status"),
-                        self.getInfo(manga, "my_read_chapters"),
-                        self.getInfo(manga, "series_synonyms")
+                        self.get_all_info(manga, ["manga_mangadb_id", "series_animedb_id"]),
+                        self.get_all_info(manga, ["manga_title", "series_title"]),
+                        self.get_info(manga, "my_status"),
+                        self.get_info(manga, "my_read_chapters"),
+                        self.get_info(manga, "series_synonyms")
                         )
                 )
             return True
         return False
 
-    def getInfos(self, manga, infonames):
-        for infoname in infonames:
-            value = self.getInfo(manga, infoname)
+    def get_all_info(self, manga, info_names):
+        for info_name in info_names:
+            value = self.get_info(manga, info_name)
             if value:
                 return value
         return ""
 
-    def getInfo(self, manga, infoname):
-        field = manga.find(infoname)
+    @staticmethod
+    def get_info(manga, info_name):
+        field = manga.find(info_name)
         if field is not None:
             return field.text
         else:
             return ""
 
-    def getMangasByStatus(self, status):
+    def get_mangas_by_status(self, status):
         mangas_by_status = []
         if status in self.statuses:
             number = self.statuses[status]

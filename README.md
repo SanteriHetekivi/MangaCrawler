@@ -2,9 +2,38 @@
 
 **Simple crawler for finding new chapters to read.**
 
-1. Reads mangalist file for supported list site from data directory.  
+1. Reads mangalist file for supported list site.  
 1. Finds all of the mangas that has 5 or more new chapters from supported manga sites.  
 3. Outputs .csv file with all of the needed data.  
+
+## Installing and usage
+
+### Installing
+1. Install ```python3``` and ```pip```.
+1. Install with pip or Build from source.
+    * Install with pip:
+        * ```pip install MangaCrawler```
+    * Build from source:
+        * ```git clone https://github.com/SanteriHetekivi/MangaCrawler.git```
+        * ```cd MangaCrawler/```
+        * ```python setup.py install```
+
+### Usage
+1. Run the program with arguments
+    * For example: ```MangaCrawler -f new -s mangafox -v -c 5 -m manga.xml```
+1. Will output result to CSV file. (**HTML output is under development**)
+
+#### Arguments
+| Short | Long   | Description |
+| ----- | ------ |  ---------- |
+| -v    |        |  Print verbose status messages. |
+| -h    | --help |  Print Help message. |
+| -f    | --find |  Manga find mode to use. (new or updated) (```-f updated```) |
+| -s    | --site |  Manga site to use. (```-s mangafox```) |
+| -c    | --min-chapters |  Minimum amount of new chapters that manga has to have before it gets to output csv. (```-c 5```) |
+| -m    | --manga-xml-file |  MyAnimeList mangalist xml file. (```-m manga.xml```) **If NOT given and current directory has XML files, program gives a opportunity to choose from them.** |
+| -a    | --azure-account-key | Account key for azure that has [Bing Search API](https://datamarket.azure.com/dataset/5BA839F1-12CE-4CCE-BF57-A49D98D29A44) access. |
+| -o    | --output-file | File to put output on. **If NOT given will make file to current directory.**|
 
 ## Deployment information
 
@@ -12,31 +41,11 @@
 1. Install ```python3``` and ```pip```
 2. Run command to build dependencies.  
     ``` pip install -r requirements.txt ```
-3. Make config.ini file that has all fields filled from [config.ini.example](https://raw.githubusercontent.com/SanteriHetekivi/MangaCrawler/master/config.ini.example) file.
-3. Add myanimelist mangalist xml file to data directory.  
-    * Export your mangalist from [MyAnimeList](https://myanimelist.net/panel.php?go=export).
-    * Decompress the .gz file  
-        ```unzip -d mangalist.xml.gz```
-    * Copy/Move mangalist.xml file to projects data directory.
-4. Run the program  
+4. Run the program
     * With output  
     ```python manga-crawler.py -f updated -s mangafox -v```
     * Without output  
     ```python manga-crawler.py -f updated -s mangafox```
-
-### Keys from config.ini descriptions
-| Name              | Description   |
-| ----------------- | ------------- |
-| azure_account_key | Account key for azure that has [Bing Search API](https://datamarket.azure.com/dataset/5BA839F1-12CE-4CCE-BF57-A49D98D29A44) access. |
-
-### Start parameters  
-| Short | Long   | Description |
-| ----- | ------ |  ---------- |
-| -v    |        |  Print verbose status messages. |
-| -h    | --help |  Print Help message. |
-| -f    | --find |  Manga find mode to use (new or updated (-f updated)). |
-| -s    | --site |  Manga site to use (-s mangafox). |
-| -c    | --min_chapters |  Minimum amount of new chapters that manga has to have before it gets to output csv. (-c 5) |
 
 ## Support and licenses
 
