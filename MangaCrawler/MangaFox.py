@@ -43,18 +43,8 @@ class MangaFox(MangaSite):
                     return 0
                 volume = volumes[0]
                 chapter_name = volume.span.text
-                numbers = re.findall('\d+\.\d+|\d+', chapter_name)
-                length = len(numbers)
-                if length <= 0:
-                    return False
-                chapters = numbers[length - 1]
-                numbers = re.findall('\d+', chapters)
-                length = len(numbers)
-                if length <= 0:
-                    return False
-                try:
-                    chapters = int(numbers[0])
-                except ValueError:
+                chapters = self.parse_chapters_from_chapter_name(chapter_name)
+                if not chapters:
                     return False
                 new_chapters = chapters - manga.chapters
                 if new_chapters <= min_chapters:
@@ -115,30 +105,48 @@ class MangaFox(MangaSite):
         try:
             with urllib.request.urlopen(req) as htmlfile:
                 soup = BeautifulSoup(htmlfile.read(), "lxml")
-                tables = soup.findAll("table", {"id": "listing"})
-                if len(tables) > 0:
-                    trs = tables[0].findChildren(['tr'])
-                    for tr in trs:
-                        cells = tr.findChildren('td')
-                        if len(cells) == 5:
-                            links = cells[0].findChildren(['a'])
-                            if len(links) > 0:
-                                link = links[0]
-                                manga_name = link.text
-                                if not self.in_names(manga_name):
-                                    chapters = int(cells[3].text)
-                                    manga_name = manga_name.replace(",", " ")
-                                    if chapters >= self.min_chapters:
-                                        if link.has_attr('href'):
-                                            manga_url = link["href"]
-                                        else:
-                                            manga_url = ""
-                                        google_url = 'https://www.google.fi/search?q=myanimelist.net+' + \
-                                                     urllib.parse.quote_plus(manga_name) + '+manga'
-                                        row = [manga_name, chapters, manga_url, google_url]
-                                        rows.append(row)
-                                        if self.verbose:
-                                            print(row)
+                divs = soup.findAll("div", {"class": "manga_text"})
+                if len(divs) > 0:
+                    for div in divs:
+                        links = div.findChildren(['a', {"class": "title series_preview top"}])
+                        if len(links) > 0:
+                            link = links[0]
+                            manga_name = link.text
+                            if not self.in_names(manga_name):
+                                ps = div.findChildren(['p', {"class": "nowrap latest"}])
+                                if len(ps) > 0:
+                                    chapter_name = ps[len(ps)-1].text
+                                    chapters = self.parse_chapters_from_chapter_name(chapter_name)
+                                    if chapters:
+                                        chapters = int(chapters)
+                                        manga_name = manga_name.replace(",", " ")
+                                        if chapters >= self.min_chapters:
+                                            if link.has_attr('href'):
+                                                manga_url = link["href"]
+                                            else:
+                                                manga_url = ""
+                                            google_url = 'https://www.google.fi/search?q=myanimelist.net+' + \
+                                                         urllib.parse.quote_plus(manga_name) + '+manga'
+                                            row = [manga_name, chapters, manga_url, google_url]
+                                            rows.append(row)
+                                            if self.verbose:
+                                                print(row)
         except urllib.error.HTTPError as err:
             return False
         return rows
+
+    def parse_chapters_from_chapter_name(self, chapter_name):
+        numbers = re.findall('\d+\.\d+|\d+', chapter_name)
+        length = len(numbers)
+        if length <= 0:
+            return False
+        chapters = numbers[length - 1]
+        numbers = re.findall('\d+', chapters)
+        length = len(numbers)
+        if length <= 0:
+            return False
+        try:
+            chapters = int(numbers[0])
+        except ValueError:
+            return False
+        return chapters
