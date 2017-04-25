@@ -6,7 +6,6 @@ from .MangaSite import MangaSite
 from .Settings import Settings
 from .XML import XML
 
-
 def main():
     settings = Settings()
     settings.from_sys_parameters()

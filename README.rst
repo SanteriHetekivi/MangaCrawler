@@ -102,14 +102,11 @@ Arguments
 |       |        | from      |
 |       |        | them.**   |
 +-------+--------+-----------+
-| -a    | –azure | Account   |
-|       | -accou | key for   |
-|       | nt-key | azure     |
-|       |        | that has  |
-|       |        | `Bing     |
+| -a    | –azure | API key   |
+|       | -accou | for `Bing |
+|       | nt-key | Web       |
 |       |        | Search    |
-|       |        | API`_     |
-|       |        | access.   |
+|       |        | API`_.    |
 +-------+--------+-----------+
 | -o    | –outpu | File to   |
 |       | t-file | put       |
@@ -158,7 +155,7 @@ Credits and license
 -  Made by `Santeri Hetekivi`_, for his personal needs.
 -  This code is licensed under `Apache License 2.0`_.
 
-.. _Bing Search API: https://datamarket.azure.com/dataset/5BA839F1-12CE-4CCE-BF57-A49D98D29A44
+.. _Bing Web Search API: https://www.microsoft.com/cognitive-services/en-us/bing-web-search-api
 .. _MyAnimeList: https://myanimelist.net/
 .. _Manga Fox: http://mangafox.me/
 .. _Santeri Hetekivi: https://github.com/SanteriHetekivi

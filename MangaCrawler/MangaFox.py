@@ -29,7 +29,7 @@ class MangaFox(MangaSite):
         if azure_account_key:
             self.azure_account_key = azure_account_key
         self.min_chapters = min_chapters
-        url = self.get_manga_site_address("mangafox", "manga", manga)
+        url = self.get_manga_site_address("mangafox.me/manga/", "manga", manga)
         if not url:
             return False
         if self.verbose:

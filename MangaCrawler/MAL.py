@@ -27,7 +27,7 @@ class MAL:
             for manga in root.iter('manga'):
                 self.mangas.append(
                     Manga(
-                        self.get_all_info(manga, ["manga_mangadb_id", "series_animedb_id"]),
+                        self.get_all_info(manga, ["manga_mangadb_id", "series_animedb_id", "series_mangadb_id"]),
                         self.get_all_info(manga, ["manga_title", "series_title"]),
                         self.get_info(manga, "my_status"),
                         self.get_info(manga, "my_read_chapters"),

@@ -32,7 +32,7 @@
 | -s    | --site |  Manga site to use. (```-s mangafox```) |
 | -c    | --min-chapters |  Minimum amount of new chapters that manga has to have before it gets to output csv. (```-c 5```) |
 | -m    | --manga-xml-file |  MyAnimeList mangalist xml file. (```-m manga.xml```) **If NOT given and current directory has XML files, program gives a opportunity to choose from them.** |
-| -a    | --azure-account-key | Account key for azure that has [Bing Search API](https://datamarket.azure.com/dataset/5BA839F1-12CE-4CCE-BF57-A49D98D29A44) access. |
+| -a    | --azure-account-key | API key for [Bing Web Search API](https://www.microsoft.com/cognitive-services/en-us/bing-web-search-api). |
 | -o    | --output-file | File to put output on. **If NOT given will make file to current directory.**|
 
 ## Deployment information

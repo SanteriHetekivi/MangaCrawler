@@ -1,6 +1,5 @@
 bs4
 beautifulsoup4
-py-bing-search
 lxml
 unidecode
 Jinja2

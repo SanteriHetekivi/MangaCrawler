@@ -5,8 +5,9 @@
 """
 import re
 
-from py_bing_search import PyBingWebSearch
+import http.client, urllib.request, urllib.parse, urllib.error, base64
 from unidecode import unidecode
+import json
 
 
 class MangaSite:
@@ -30,23 +31,46 @@ class MangaSite:
         api_key = self.azure_account_key
         if not api_key:
             return False
-        bing_web = PyBingWebSearch(api_key, search_term, web_only=False)
-        results = bing_web.search(limit=1, format='json')
-        length = len(results)
-        if length > 0 and site in results[0].url and url_part in results[0].url:
-            manga_site_url = results[0].url
-            parts = manga_site_url.split("/")
-            manga_site_url = ""
-            stop_next = 0
-            for part in parts:
-                manga_site_url += part + "/"
-                if part == url_part:
-                    stop_next = 1
-                elif stop_next:
-                    break
-            return manga_site_url
-        else:
-            return False
+
+        headers = {
+            # Request headers
+            'Ocp-Apim-Subscription-Key': api_key,
+        }
+
+        params = urllib.parse.urlencode({
+            'q': search_term,
+            'count': '1',
+            'offset': '0',
+            'mkt': 'en-us',
+            'safesearch': 'Moderate',
+        })
+
+        try:
+            conn = http.client.HTTPSConnection('api.cognitive.microsoft.com')
+            conn.request("GET", "/bing/v5.0/search?%s" % params, "{body}", headers)
+            response = conn.getresponse()
+            string = response.read().decode('utf-8')
+            data = json.loads(string)
+            results = data["webPages"]["value"]
+            conn.close()
+            length = len(results)
+            if length > 0 and site in results[0]["displayUrl"] and url_part in results[0]["displayUrl"]:
+                manga_site_url = results[0]["displayUrl"]
+                parts = manga_site_url.split("/")
+                manga_site_url = ""
+                stop_next = 0
+                for part in parts:
+                    manga_site_url += part + "/"
+                    if part == url_part:
+                        stop_next = 1
+                    elif stop_next:
+                        break
+                return "%s%s" % ("http://", manga_site_url)
+            else:
+                return False
+        except Exception as e:
+            print(e)
+            return False        
 
     def get_updated_manga(self, manga, min_chapters=0):
         return False
